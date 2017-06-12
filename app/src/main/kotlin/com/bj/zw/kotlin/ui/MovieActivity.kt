@@ -1,8 +1,11 @@
 package com.bj.zw.kotlin.ui
 
+import `interface`.onclickListener
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.bj.zw.kotlin.MovieAdapter
 import com.bj.zw.kotlinrecyclerview.R
 import com.google.gson.Gson
@@ -11,8 +14,9 @@ import com.zhy.http.okhttp.callback.StringCallback
 import okhttp3.Call
 import widget.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_movie.*
+import util.toast
 
-class MovieActivity : AppCompatActivity(), PullLoadMoreRecyclerView.PullLoadMoreListener {
+class MovieActivity : AppCompatActivity(), PullLoadMoreRecyclerView.PullLoadMoreListener, onclickListener {
     var TAG:String = "MovieActivity"
     internal var mRecyclerViewAdapter:MovieAdapter? =null
     var count:Int=10
@@ -34,12 +38,13 @@ class MovieActivity : AppCompatActivity(), PullLoadMoreRecyclerView.PullLoadMore
         //是否上拉加载更多
         pullLoadMoreRecyclerView.pushRefreshEnable=true
         pullLoadMoreRecyclerView.setFooterViewText("正在加载...")
-
+        pullLoadMoreRecyclerView.setRefreshing(true)//进入页面是否显示加载
         pullLoadMoreRecyclerView.setLinearLayout()
 
         pullLoadMoreRecyclerView.setOnPullLoadMoreListener(this)
         mRecyclerViewAdapter= MovieAdapter(mlist,this@MovieActivity)
         pullLoadMoreRecyclerView.setAdapter(mRecyclerViewAdapter)
+        mRecyclerViewAdapter!!.setOnItemClickListener(this@MovieActivity)
     }
 
     private fun getMovie(start:Int,count:Int) {
@@ -59,12 +64,17 @@ class MovieActivity : AppCompatActivity(), PullLoadMoreRecyclerView.PullLoadMore
                         Log.i(TAG,response)
                         val result=Gson().fromJson(response,MovieModel::class.java)
 
-                        val addAll = mlist.addAll(result.subjects)
+                        mlist.addAll(result.subjects)
                         mRecyclerViewAdapter!!.notifyDataSetChanged()
                         pullLoadMoreRecyclerView.setPullLoadMoreCompleted()
                     }
                 })
 
+    }
+
+    override fun onItemClick(position: Int, view: View) {
+        toast("选中="+position)
+        startActivity(Intent(this,MovieDetailActivity::class.java))
     }
 
 

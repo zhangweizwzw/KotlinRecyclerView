@@ -20,9 +20,6 @@ import android.widget.TextView;
 
 import com.bj.zw.kotlinrecyclerview.R;
 
-/**
- * Created by 2015/7/2.
- */
 public class PullLoadMoreRecyclerView extends LinearLayout {
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
