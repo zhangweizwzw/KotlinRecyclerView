@@ -19,7 +19,7 @@ import util.toast
 class MovieActivity : AppCompatActivity(), PullLoadMoreRecyclerView.PullLoadMoreListener, onclickListener {
     var TAG:String = "MovieActivity"
     internal var mRecyclerViewAdapter:MovieAdapter? =null
-    var count:Int=10
+    var count:Int=15
     var mlist:ArrayList<SubjectsBean> =ArrayList<SubjectsBean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +65,9 @@ class MovieActivity : AppCompatActivity(), PullLoadMoreRecyclerView.PullLoadMore
                         val result=Gson().fromJson(response,MovieModel::class.java)
 
                         mlist.addAll(result.subjects)
+
+                        MyApplication.alist=mlist
+
                         mRecyclerViewAdapter!!.notifyDataSetChanged()
                         pullLoadMoreRecyclerView.setPullLoadMoreCompleted()
                     }
@@ -73,8 +76,10 @@ class MovieActivity : AppCompatActivity(), PullLoadMoreRecyclerView.PullLoadMore
     }
 
     override fun onItemClick(position: Int, view: View) {
-        toast("选中="+position)
-        startActivity(Intent(this,MovieDetailActivity::class.java))
+        val intent=Intent()
+        intent.putExtra("position",position)
+        intent.setClass(this,MovieDetailActivity::class.java)
+        startActivity(intent)
     }
 
 
